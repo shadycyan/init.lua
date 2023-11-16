@@ -16,6 +16,8 @@ return {
 
 			{ 'nvim-lua/plenary.nvim' },
 			{ 'stevearc/dressing.nvim' },
+
+			{ "dart-lang/dart-vim-plugin" },
 		},
 	},
 	config = function()
@@ -31,14 +33,15 @@ return {
 			'dartls',
 		})
 
-		-- lsp_zero.ensure_installed({
-		-- 	"lua_ls",
-		-- 	"yamlls",
-		-- 	"jsonls",
-		-- })
-
 		require 'lspconfig'.dartls.setup {
 			cmd = { "dart", 'language-server', '--protocol=lsp' },
+			init_options = {
+				closingLabels = true,
+				flutterOutline = true,
+				onlyAnalyzeProjectsWithOpenFiles = true,
+				outline = true,
+				suggestFromUnimportedLibraries = true
+			}
 		}
 
 		-- Fix Undefined global 'vim'
@@ -53,10 +56,10 @@ return {
 		})
 
 		require('mason').setup({})
+
 		require('mason-lspconfig').setup({
 			ensure_installed = {
 				"yamlls",
-				"dartls",
 				"jsonls",
 			},
 			handlers = {
@@ -74,14 +77,45 @@ return {
 
 		lsp_zero.format_on_save({
 			format_opts = {
-				async = false,
+				async = true,
 				timeout_ms = 10000,
 			},
 			servers = {
-				['tsserver'] = { 'javascript', 'typescript' },
+				['dartls'] = { 'dart' },
 				['rust_analyzer'] = { 'rust' },
+				['tsserver'] = { 'javascript', 'typescript' },
 			}
 		})
+
+
+		lsp_zero.set_sign_icons({
+			error = '❌',
+			warn = '⚠️',
+			hint = '⛳️',
+			info = 'ℹ️'
+		})
+
+		local cmp = require('cmp')
+		local cmp_action = require('lsp-zero').cmp_action()
+
+		cmp.setup({
+			mapping = cmp.mapping.preset.insert({
+				-- `Enter` key to confirm completion
+				['<CR>'] = cmp.mapping.confirm({ select = false }),
+
+				-- Ctrl+Space to trigger completion menu
+				['<C-Space>'] = cmp.mapping.complete(),
+
+				-- Navigate between snippet placeholder
+				['<C-f>'] = cmp_action.luasnip_jump_forward(),
+				['<C-b>'] = cmp_action.luasnip_jump_backward(),
+
+				-- Scroll up and down in the completion documentation
+				['<C-u>'] = cmp.mapping.scroll_docs(-4),
+				['<C-d>'] = cmp.mapping.scroll_docs(4),
+			})
+		})
+
 
 		local auto_group = vim.api.nvim_create_augroup("LspAuGroup", { clear = true })
 
@@ -89,6 +123,7 @@ return {
 			callback = function(args)
 				local client = vim.lsp.get_client_by_id(args.data.client_id)
 				-- highlight references
+
 				-- if client.server_capabilities.documentHighlightProvider then
 				-- 	vim.api.nvim_create_autocmd("CursorHold", {
 				-- 		callback = function() vim.lsp.buf.document_highlight() end,
@@ -99,7 +134,9 @@ return {
 				-- 		group = auto_group,
 				-- 	})
 				-- end
-				-- formatting
+
+				-- auto-format
+
 				if client.server_capabilities.documentFormattingProvider then
 					vim.api.nvim_create_autocmd("BufWritePre", {
 						callback = function() vim.lsp.buf.format() end,
