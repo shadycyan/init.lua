@@ -22,10 +22,6 @@ keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move highlighted lines up" })
 keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move highlighted lines down" })
 
 keymap.set("n", "Q", "<nop>", { noremap = true, silent = true })
-keymap.set('n', 'a', '<nop>', { noremap = true, silent = true })
-keymap.set('n', 'O', '<nop>', { noremap = true, silent = true })
-keymap.set('n', 'o', '<nop>', { noremap = true, silent = true })
-
 keymap.set('n', '<leader>st', ':tabedit', { desc = "New tab" })
 
 keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" })

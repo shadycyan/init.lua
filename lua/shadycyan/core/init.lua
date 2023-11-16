@@ -9,14 +9,14 @@ local is_win = has "win32"
 local is_wsl = has "wsl"
 
 if is_mac == 1 then
-  require('shadycyan.core.macos')
+	require('shadycyan.core.macos')
 end
 if is_linux == 1 then
-  require('shadycyan.core.linux')
+	require('shadycyan.core.linux')
 end
 if is_win == 1 then
-  require('shadycyan.core.windows')
+	require('shadycyan.core.windows')
 end
 if is_wsl == 1 then
-  require('shadycyan.core.wsl')
+	require('shadycyan.core.wsl')
 end

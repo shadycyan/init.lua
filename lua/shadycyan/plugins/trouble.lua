@@ -2,7 +2,7 @@ return {
 	"folke/trouble.nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 
-	config = function ()
+	config = function()
 		vim.keymap.set(
 			"n",
 			"<leader>dt",
